@@ -63,9 +63,6 @@ var checkUrlFile = function(htmlUrl, checksfile) {
 			this.retry(5000); // try again after 5 sec
 
 		} else {
-
-			// console.log(JSON.stringify(result));
-
 			$ = cheerio.load(result);
 			var checks = loadChecks(checksfile).sort();
 			var out = {};
@@ -77,8 +74,6 @@ var checkUrlFile = function(htmlUrl, checksfile) {
 			console.log(outJson);
 		}
 	});
-
-	return undefined;
 };
 
 var clone = function(fn) {
@@ -94,12 +89,11 @@ if(require.main == module) {
 	.option('-u, --url <file_url>', 'URL for index.html')
 	.parse(process.argv);
 
-	console.error("Checks = " + program.checks);
-	console.error("File   = " + (program.file || HTMLFILE_DEFAULT));
-	console.error("URL    = " + program.url);
+	if (program.url) {
+		checkUrlFile(program.url, program.checks);
 
-	var checkJson = program.url ? checkUrlFile(program.url, program.checks) : checkHtmlFile(program.file || HTMLFILE_DEFAULT, program.checks);
-	if (checkJson) {
+	} else {
+		var checkJson = checkHtmlFile(program.file || HTMLFILE_DEFAULT, program.checks);
 		var outJson = JSON.stringify(checkJson, null, 4);
 		console.log(outJson);
 	}
